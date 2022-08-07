@@ -1,12 +1,16 @@
 let prod=0;
 let pay = 0;
 let estado=0;
-let cuenta = 0;
 let subto=0;
 let cuenta_tax=0;
 let cantidad = 0;
 let cantidad_total=0;
 let med_pago = 0;
+const productos =   ["Sandwich","Ensalada","Hamburguesa","Hot Dog","Coca-Cola","Pepsi","Fanta"];
+const precios   =   [3.5,       4.5,        6.5,            4.99,       3,      2.8,    2.5];
+const resumen_qty = [];
+const resumen_price = [];
+const historial=[];
 
 const suma = (a,b) => a+b;
 const resta = (a,b) => a-b;
@@ -31,36 +35,8 @@ function AddProduct (){
         prod = parseFloat(prompt("Por favor indique el producto que desea:\n\n1. Sandwich: USD 3.5 c/u\n2. Ensalada: USD 4.5\n3. Hamburguesa: USD 6.5\n4. Hot Dog: USD 4.99\n5. Coca-Cola: USD 3\n6. Pepsi: USD 2.8\n7. Fanta: USD 2.5"));
     }
 
-    switch(prod){
-        case 1:
-            console.log("Producto: Sandwich");
-            pay=3.5;
-            break;        
-        case 2:
-            console.log("Producto: Ensalada");
-            pay=4.5;
-            break;        
-        case 3:
-            console.log("Producto: Hamburguesa");
-            pay=6;
-            break;
-        case 4:
-            console.log("Producto: Hot Dog");
-            pay=4.99;
-            break;
-        case 5:
-            console.log("Producto: Coca-Cola");
-            pay=3;
-            break;
-        case 6:
-            console.log("Producto: Pepsi");
-            pay=2.8;
-            break;
-        case 7:
-            console.log("Producto: Fanta");
-            pay=2.5;
-            break;
-    }
+    console.log("Producto: "+productos[prod-1]);
+    pay=precios[prod-1];
 
     cantidad=parseFloat(prompt("Ingrese la cantidad solicitada:"));
 
@@ -70,6 +46,10 @@ function AddProduct (){
     }
 
     console.log("Cantidad:",cantidad);
+
+    resumen_price.push(pay);
+    resumen_qty.push(cantidad);
+    historial.push(productos[prod-1]);
 }
 
 function Payment(method){
@@ -94,15 +74,18 @@ Estado();
 
 while(estado!=2){
     AddProduct();
-    
-    cuenta=multi(pay,cantidad);
-    console.log("Subtotal:\nUSD ",cuenta);
-    console.log(taxes(cuenta));
-    cuenta_tax=suma(cuenta_tax,taxes(cuenta));
-    subto=suma(subto,cuenta);
-    cantidad_total=suma(cantidad_total,cantidad);
-        Estado();
+    Estado();
 }
+
+console.log("Pedido confirmado:")
+
+for(let i=0; i<resumen_qty.length; i++){
+    console.log(historial[i]+" cantidad: "+resumen_qty[i]);
+    cantidad_total=suma(cantidad_total,resumen_qty[i]);
+    subto=suma(subto,multi(resumen_price[i],resumen_qty[i]));
+    cuenta_tax=taxes(subto);
+}
+
 alert("Cantidad ítems: "+cantidad_total+"\nSubtotal: USD "+subto+"\nIVA: USD "+cuenta_tax);
 
 med_pago=parseFloat(prompt("Ingrese el medio de pago:\n\n1. Débito / Efectivo.\n2. Crédito."));
